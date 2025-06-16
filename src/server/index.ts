@@ -1,9 +1,9 @@
 import express from 'express'
 import dotenv from 'dotenv'
 
-import { llamadasRouter } from '@/controller/llamadasRouter.js'
-import { clientes } from '@/controller/clientes.js'
-import { empleados } from '@/controller/empleados.js'
+import { llamadasRouter } from '@/routes/llamadasRouter.js'
+import { clientes } from '@/routes/clientes.js'
+import { empleados } from '@/routes/empleados.js'
 
 dotenv.config()
 
