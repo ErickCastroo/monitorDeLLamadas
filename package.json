@@ -1,0 +1,27 @@
+{
+  "name": "sistemallamadas",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "ts-patch install && tsc",
+    "dev": "nodemon"
+  },
+  "author": "Castro Camacho Erick Miguel",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.3",
+    "nodemon": "^3.1.10",
+    "ts-patch": "^3.3.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.2",
+    "typescript-transform-paths": "^3.5.5"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  }
+}
