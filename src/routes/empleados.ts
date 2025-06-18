@@ -6,6 +6,15 @@ import { validation } from '@/middleware/validation.js'
 
 const empleados = Router()
 
+empleados.post('/login',
+  body('nombre').notEmpty().withMessage('Nombre is required'),
+  body('contrasena').notEmpty().withMessage('Contraseña is required'),
+  validation,
+  (req, res, next) => {
+    Promise.resolve(AuthController.login(req, res))
+      .catch(next)
+  })
+
 empleados.get('/', (req, res) => {
   res.json({ message: 'Empleados endpoint' })
 })
@@ -17,7 +26,6 @@ empleados.post('/create',
   (req, res, next) => {
     Promise.resolve(AuthController.createEmp(req, res))
       .catch(next)
-
   })
 empleados.put('/:id', (req, res) => {
   res.json({ message: 'Empleado updated', id: req.params.id, data: req.body })
