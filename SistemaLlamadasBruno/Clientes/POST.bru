@@ -1,0 +1,22 @@
+meta {
+  name: POST
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api/clientes/create
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "cuenta": "string",
+      "nombre": "string",
+      "domicilio": "string",
+      "saldo": 1364.32,
+      "telefono": "631234567",
+      "empleadoId": 1
+  }
+}

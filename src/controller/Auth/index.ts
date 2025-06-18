@@ -24,7 +24,7 @@ export class AuthController {
 
     } catch (error) {
       console.error('Error creating employee:', error)
-      return res.status(500).json({ message: 'Error creating employee' })
+      return res.status(500).json({ message: 'Error al crear al Empleado' })
     }
   }
 
@@ -42,12 +42,11 @@ export class AuthController {
         return res.status(401).json({ message: 'Credenciales incorrectas' })
       }
 
-
       //jwt   
 
     } catch (error) {
       console.error('Error during login:', error)
-      return res.status(500).json({ message: 'Error during login' })
+      return res.status(500).json({ message: 'Error durante al login' })
     }
   }
 }
