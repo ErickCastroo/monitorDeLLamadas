@@ -1,0 +1,19 @@
+meta {
+  name: POST
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api/llamadas
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "clienteId": 1,
+    "respuesta": true,
+    "observacion": "No contesto"
+  }
+}

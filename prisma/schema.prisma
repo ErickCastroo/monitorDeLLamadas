@@ -16,22 +16,22 @@ model Empleado {
 }
 
 model Cliente {
-  id          Int       @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   cuenta      String
   nombre      String
   domicilio   String
   saldo       Float
   telefono    String
   empleadoId  Int
-  empleado    Empleado   @relation(fields: [empleadoId], references: [id])
+  empleado    Empleado     @relation(fields: [empleadoId], references: [id])
   seguimiento Seguimiento?
 }
 
 model Seguimiento {
-  id          Int       @id @default(autoincrement())
-  clienteId   Int       @unique
-  cliente     Cliente   @relation(fields: [clienteId], references: [id])
-  respuesta   String
+  id          Int      @id @default(autoincrement())
+  clienteId   Int      @unique
+  cliente     Cliente  @relation(fields: [clienteId], references: [id])
+  respuesta   Boolean
   observacion String?
-  fecha       DateTime  @default(now())
+  fecha       DateTime @default(now())
 }
