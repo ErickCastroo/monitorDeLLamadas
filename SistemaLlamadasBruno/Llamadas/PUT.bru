@@ -1,0 +1,19 @@
+meta {
+  name: PUT
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:3000/api/llamadas/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "clienteId": 1,
+    "respuesta": true,
+    "observacion": "Paso a pagar"
+  }
+}

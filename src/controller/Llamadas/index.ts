@@ -68,4 +68,21 @@ export class LlamadasController {
     }
   }
 
+  static async putLlamada(req: Request, res: Response) {
+    try {
+      const { id } = req.params
+      const seguimiento = req.body as Seguimiento
+
+      const updatedLlamada = await prisma.seguimiento.update({
+        where: { id: Number(id) },
+        data: seguimiento
+      })
+
+      return res.status(200).json(updatedLlamada)
+
+    } catch (error) {
+      console.error('Error updating call:', error)
+      return res.status(500).json({ message: 'Error al actualizar la llamada' })
+    }
+  }
 }

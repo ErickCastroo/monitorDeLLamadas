@@ -20,7 +20,6 @@ llamadasRouter.get('/:id', (req, res) => {
       console.error('Error in llamadasRouter GET /cuenta:', err)
       res.status(500).json({ message: 'Internal Server Error' })
     })
-
 })
 
 
@@ -34,8 +33,19 @@ llamadasRouter.post('/',
       .catch(next)
   })
 
-llamadasRouter.put('/:id', (req, res) => {
-})
+llamadasRouter.put('/:id',
+  body('clienteId').notEmpty().withMessage('ID is required'),
+  body('respuesta').notEmpty().withMessage('Respuesta is required'),
+  body('observacion').notEmpty().withMessage('Observacion is required'),
+  validation,
+  (req, res) => {
+    Promise.resolve(LlamadasController.putLlamada(req, res))
+      .catch(err => {
+        console.error('Error in llamadasRouter PUT /:', err)
+        res.status(500).json({ message: 'Internal Server Error' })
+      })
+
+  })
 
 llamadasRouter.delete('/:id', (req, res) => {
 })
