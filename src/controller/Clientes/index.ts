@@ -6,15 +6,31 @@ export class clientesController {
 
   static async getClientes(req: Request, res: Response) {
     try {
-
+      const clientes = await prisma.cliente.findMany()
+      if (clientes.length === 0) {
+        return res.status(404).json({ message: 'No se encontraron clientes' })
+      }
+      return res.status(200).json(clientes)
     } catch (error) {
       console.error('Error fetching clients:', error)
       return res.status(500).json({ message: 'Error al obtener a los clientes' })
     }
   }
+
   static async getbyIdClientes(req: Request, res: Response) {
     try {
       const { cuenta } = req.params
+      const cliente = await prisma.cliente.findMany({
+        where: {
+          cuenta: cuenta
+        }
+      })
+
+      if (cliente.length === 0) {
+        return res.status(404).json({ message: 'Cliente no encontrado' })
+      }
+
+      return res.status(200).json(cliente[0])
 
 
     } catch (error) {
@@ -22,8 +38,6 @@ export class clientesController {
       return res.status(500).json({ message: 'Error al obtener al cliente' })
     }
   }
-
-
 
   static async postClientes(req: Request, res: Response) {
     try {

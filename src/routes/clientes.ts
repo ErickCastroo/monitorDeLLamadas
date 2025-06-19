@@ -8,13 +8,26 @@ import { clientesController } from '@/controller/Clientes/index.js'
 const clientes = Router()
 
 clientes.get('/', (req, res) => {
-  res.json({ message: 'Clientes endpoint' })
+  Promise.resolve(clientesController.getClientes(req, res))
+    .catch(error => {
+      console.error('Error fetching clients:', error)
+      res.status(500).json({ message: 'Error al obtener los clientes' })
+    })
 })
+
+clientes.get('/:cuenta', (req, res) => {
+  Promise.resolve(clientesController.getbyIdClientes(req, res))
+    .catch(error => {
+      console.error('Error fetching client by ID:', error)
+      res.status(500).json({ message: 'Error al obtener el cliente' })
+    })
+})
+
 
 clientes.post('/create',
   body('cuenta').notEmpty().withMessage('Cuenta is required'),
   body('nombre').notEmpty().withMessage('Nombre is required'),
-  body('domicilio').notEmpty().withMessage('Nombre is required'),
+  body('domicilio').notEmpty().withMessage('domicilio is required'),
   body('saldo').isNumeric().withMessage('Saldo must be a number'),
   body('telefono').notEmpty().withMessage('Telefono is required'),
   body('empleadoId').isNumeric().withMessage('EmpleadoId must be a number'),
