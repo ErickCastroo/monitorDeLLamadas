@@ -85,4 +85,20 @@ export class LlamadasController {
       return res.status(500).json({ message: 'Error al actualizar la llamada' })
     }
   }
+
+  static async deleteLlamada(req: Request, res: Response) {
+    try {
+      const { id } = req.params
+
+      const deletedLlamada = await prisma.seguimiento.delete({
+        where: { id: Number(id) }
+      })
+
+      return res.status(200).json(deletedLlamada)
+
+    } catch (error) {
+      console.error('Error deleting call:', error)
+      return res.status(500).json({ message: 'Error al eliminar la llamada' })
+    }
+  }
 }

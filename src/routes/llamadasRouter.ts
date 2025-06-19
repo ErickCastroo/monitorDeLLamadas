@@ -47,7 +47,13 @@ llamadasRouter.put('/:id',
 
   })
 
-llamadasRouter.delete('/:id', (req, res) => {
-})
+llamadasRouter.delete('/:id',
+  (req, res) => {
+    Promise.resolve(LlamadasController.deleteLlamada(req, res))
+      .catch(err => {
+        console.error('Error in llamadasRouter DELETE /:', err)
+        res.status(500).json({ message: 'Internal Server Error' })
+      })
+  })
 
 export { llamadasRouter }
