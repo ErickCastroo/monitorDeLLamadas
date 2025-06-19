@@ -1,0 +1,22 @@
+meta {
+  name: PUT
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:3000/api/clientes/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "cuenta": "12345",
+      "nombre": "Erick Camacho",
+      "domicilio": "Rio o se No. Ext. 0033 ",
+      "saldo": 2134.12,
+      "telefono": "631923762",
+      "empleadoId": 1
+  }
+}

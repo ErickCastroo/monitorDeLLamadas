@@ -37,10 +37,25 @@ clientes.post('/create',
       .catch(next)
   })
 
+clientes.put('/:id',
+  body('cuenta').notEmpty().withMessage('Cuenta is required'),
+  body('nombre').notEmpty().withMessage('Nombre is required'),
+  body('domicilio').notEmpty().withMessage('domicilio is required'),
+  body('saldo').isNumeric().withMessage('Saldo must be a number'),
+  body('telefono').notEmpty().withMessage('Telefono is required'),
+  body('empleadoId').isNumeric().withMessage('EmpleadoId must be a number'),
+  validation,
+  (req, res, next) => {
+    Promise.resolve(clientesController.putClientes(req, res))
+      .catch(next)
+  })
 
-clientes.put('/:id', (req, res) => {
-  res.json({ message: 'Cliente updated', id: req.params.id, data: req.body })
+clientes.delete('/:id', (req, res) => {
+  Promise.resolve(clientesController.deleteClientes(req, res))
+    .catch(error => {
+      console.error('Error deleting client:', error)
+      res.status(500).json({ message: 'Error al eliminar el cliente' })
+    })
 })
-
 
 export { clientes }

@@ -25,14 +25,10 @@ export class clientesController {
           cuenta: cuenta
         }
       })
-
       if (cliente.length === 0) {
         return res.status(404).json({ message: 'Cliente no encontrado' })
       }
-
       return res.status(200).json(cliente[0])
-
-
     } catch (error) {
       console.error('Error fetching clients:', error)
       return res.status(500).json({ message: 'Error al obtener al cliente' })
@@ -50,7 +46,6 @@ export class clientesController {
       if (clienteExists) {
         return res.status(400).json({ message: 'Cliente ya existe' })
       }
-
       const newCliente = await prisma.cliente.create({
         data: cliente
       })
@@ -61,21 +56,43 @@ export class clientesController {
     }
   }
 
-
-
-
   static async putClientes(req: Request, res: Response) {
     try {
-
+      const clientes = req.body as Cliente
+      const { id } = req.params
+      const clienteExists = await prisma.cliente.update({
+        where: {
+          id: Number(id)
+        },
+        data: clientes
+      })
+      if (!clienteExists) {
+        return res.status(404).json({ message: 'Cliente no encontrado' })
+      }
+      return res.status(200).json({ message: 'Cliente actualizado', cliente: clienteExists })
     } catch (error) {
       console.error('Error updating client:', error)
       return res.status(500).json({ message: 'Error al actualizar al cliente' })
     }
-
   }
 
   static async deleteClientes(req: Request, res: Response) {
     try {
+      const { id } = req.params
+      const clienteExists = await prisma.cliente.findUnique({
+        where: {
+          id: Number(id)
+        }
+      })
+      if (!clienteExists) {
+        return res.status(404).json({ message: 'Cliente no encontrado' })
+      }
+      await prisma.cliente.delete({
+        where: {
+          id: Number(id)
+        }
+      })
+      return res.status(200).json({ message: 'Cliente eliminado correctamente' })
 
     } catch (error) {
       console.error('Error deleting client:', error)
