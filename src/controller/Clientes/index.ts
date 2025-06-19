@@ -12,91 +12,95 @@ export class clientesController {
       }
       return res.status(200).json(clientes)
     } catch (error) {
-      console.error('Error fetching clients:', error)
-      return res.status(500).json({ message: 'Error al obtener a los clientes' })
+      console.error('Error al obtener los clientes:', error)
+      return res.status(500).json({ message: 'Error al obtener los clientes' })
     }
   }
 
   static async getbyIdClientes(req: Request, res: Response) {
     try {
       const { cuenta } = req.params
-      const cliente = await prisma.cliente.findMany({
-        where: {
-          cuenta: cuenta
-        }
+      const cliente = await prisma.cliente.findFirst({
+        where: { cuenta }
       })
-      if (cliente.length === 0) {
+      if (!cliente) {
         return res.status(404).json({ message: 'Cliente no encontrado' })
       }
-      return res.status(200).json(cliente[0])
+      return res.status(200).json(cliente)
     } catch (error) {
-      console.error('Error fetching clients:', error)
-      return res.status(500).json({ message: 'Error al obtener al cliente' })
+      console.error('Error al obtener el cliente:', error)
+      return res.status(500).json({ message: 'Error al obtener el cliente' })
     }
   }
 
   static async postClientes(req: Request, res: Response) {
     try {
       const cliente = req.body as Cliente
+
       const clienteExists = await prisma.cliente.findFirst({
-        where: {
-          cuenta: cliente.cuenta
-        }
+        where: { cuenta: cliente.cuenta }
       })
+
       if (clienteExists) {
         return res.status(400).json({ message: 'Cliente ya existe' })
       }
+
       const newCliente = await prisma.cliente.create({
         data: cliente
       })
+
       return res.status(201).json(newCliente)
     } catch (error) {
-      console.error('Error fetching clients:', error)
-      return res.status(500).json({ message: 'Error al registar un cliente' })
+      console.error('Error al registrar cliente:', error)
+      return res.status(500).json({ message: 'Error al registrar cliente' })
     }
   }
 
   static async putClientes(req: Request, res: Response) {
     try {
-      const clientes = req.body as Cliente
       const { id } = req.params
-      const clienteExists = await prisma.cliente.update({
-        where: {
-          id: Number(id)
-        },
-        data: clientes
+      const data = req.body as Cliente
+
+      const cliente = await prisma.cliente.findUnique({
+        where: { id: Number(id) }
       })
-      if (!clienteExists) {
+
+      if (!cliente) {
         return res.status(404).json({ message: 'Cliente no encontrado' })
       }
-      return res.status(200).json({ message: 'Cliente actualizado', cliente: clienteExists })
+
+      const clienteActualizado = await prisma.cliente.update({
+        where: { id: Number(id) },
+        data
+      })
+
+      return res.status(200).json({ message: 'Cliente actualizado', cliente: clienteActualizado })
     } catch (error) {
-      console.error('Error updating client:', error)
-      return res.status(500).json({ message: 'Error al actualizar al cliente' })
+      console.error('Error al actualizar cliente:', error)
+      return res.status(500).json({ message: 'Error al actualizar cliente' })
     }
   }
 
   static async deleteClientes(req: Request, res: Response) {
     try {
       const { id } = req.params
-      const clienteExists = await prisma.cliente.findUnique({
-        where: {
-          id: Number(id)
-        }
+
+      const cliente = await prisma.cliente.findUnique({
+        where: { id: Number(id) }
       })
-      if (!clienteExists) {
+
+      if (!cliente) {
         return res.status(404).json({ message: 'Cliente no encontrado' })
       }
-      await prisma.cliente.delete({
-        where: {
-          id: Number(id)
-        }
-      })
-      return res.status(200).json({ message: 'Cliente eliminado correctamente' })
 
+      await prisma.cliente.delete({
+        where: { id: Number(id) }
+      })
+
+      return res.status(200).json({ message: 'Cliente eliminado correctamente' })
     } catch (error) {
-      console.error('Error deleting client:', error)
-      return res.status(500).json({ message: 'Error al eliminar al cliente' })
+      console.error('Error al eliminar cliente:', error)
+      return res.status(500).json({ message: 'Error al eliminar cliente' })
     }
   }
 }
