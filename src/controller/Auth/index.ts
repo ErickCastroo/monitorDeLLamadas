@@ -5,6 +5,16 @@ import { prisma } from '@/config/db.js'
 
 export class AuthController {
 
+  static async getEmpleados(req: Request, res: Response) {
+    try {
+      const empleados = await prisma.empleado.findMany()
+      return res.status(200).json(empleados)
+    } catch (error) {
+      console.error('Error fetching employees:', error)
+      return res.status(500).json({ message: 'Error al obtener los Empleados' })
+    }
+  }
+
   static async createEmp(req: Request, res: Response) {
     try {
       const user = req.body as Empleado
@@ -27,6 +37,25 @@ export class AuthController {
       return res.status(500).json({ message: 'Error al crear al Empleado' })
     }
   }
+
+  static async updateEmp(req: Request, res: Response) {
+    try {
+      const { id } = req.params
+      const user = req.body as Empleado
+
+      const empleado = await prisma.empleado.update({
+        where: { id: Number(id) },
+        data: user
+      })
+
+      return res.status(200).json(empleado)
+
+    } catch (error) {
+      console.error('Error updating employee:', error)
+      return res.status(500).json({ message: 'Error al actualizar al Empleado' })
+    }
+  }
+
 
   static async login(req: Request, res: Response) {
     try {

@@ -1,0 +1,18 @@
+meta {
+  name: PUT
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:3000/api/empleados/update/2
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Miguel",
+    "contrasena": "1345678"
+  }
+}

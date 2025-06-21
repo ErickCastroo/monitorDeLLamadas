@@ -1,59 +1,76 @@
-import { LlamadasController } from '@/controller/Llamadas/index.js'
-import { validation } from '@/middleware/validation.js'
 import { Router } from 'express'
 import { body } from 'express-validator'
+import { validation } from '@/middleware/validation.js'
+import { LlamadasController } from '@/controller/Llamadas/index.js'
+
 
 const llamadasRouter = Router()
 
-llamadasRouter.get('/', (req, res) => {
-  Promise.resolve(LlamadasController.getLlamadas(req, res))
-    .catch(err => {
-      console.error('Error in llamadasRouter GET /:', err)
-      res.status(500).json({ message: 'Internal Server Error' })
-    })
-
+// Obtener todas las llamadas
+llamadasRouter.get('/', async (req, res) => {
+  try {
+    await LlamadasController.getLlamadas(req, res)
+  } catch (err) {
+    console.error('Error GET /llamadas:', err)
+    res.status(500).json({ message: 'Internal Server Error' })
+  }
 })
 
-llamadasRouter.get('/:id', (req, res) => {
-  Promise.resolve(LlamadasController.getLlamadas(req, res))
-    .catch(err => {
-      console.error('Error in llamadasRouter GET /cuenta:', err)
-      res.status(500).json({ message: 'Internal Server Error' })
-    })
+// Obtener llamada por ID
+llamadasRouter.get('/:id', async (req, res) => {
+  try {
+    await LlamadasController.getLlamadaById(req, res)
+  } catch (err) {
+    console.error('Error GET /llamadas/:id:', err)
+    res.status(500).json({ message: 'Internal Server Error' })
+  }
 })
 
-
+// Crear nueva llamada
 llamadasRouter.post('/',
-  body('clienteId').notEmpty().withMessage('ID is required'),
-  body('respuesta').notEmpty().withMessage('Respuesta is required'),
-  body('observacion').notEmpty().withMessage('Observacion is required'),
+  body('clienteId')
+    .notEmpty().withMessage('ClienteId is required')
+    .isInt().withMessage('ClienteId must be a number')
+    .toInt(),
+  body('respuesta')
+    .notEmpty().withMessage('Respuesta is required')
+    .isBoolean().withMessage('Respuesta must be a boolean')
+    .toBoolean(),              // ← convierte "true"/"false" a boolean
+  body('observacion')
+    .notEmpty().withMessage('Observacion is required'),
   validation,
-  (req, res, next) => {
-    Promise.resolve(LlamadasController.postLlamada(req, res))
-      .catch(next)
-  })
-
+  async (req, res) => {
+    try {
+      await LlamadasController.postLlamada(req, res)
+    } catch (err) {
+      console.error('Error POST /llamadas:', err)
+      res.status(500).json({ message: 'Internal Server Error' })
+    }
+  }
+)
+// Actualizar llamada
 llamadasRouter.put('/:id',
-  body('clienteId').notEmpty().withMessage('ID is required'),
   body('respuesta').notEmpty().withMessage('Respuesta is required'),
   body('observacion').notEmpty().withMessage('Observacion is required'),
   validation,
-  (req, res) => {
-    Promise.resolve(LlamadasController.putLlamada(req, res))
-      .catch(err => {
-        console.error('Error in llamadasRouter PUT /:', err)
-        res.status(500).json({ message: 'Internal Server Error' })
-      })
+  async (req, res) => {
+    try {
+      await LlamadasController.putLlamada(req, res)
+    } catch (err) {
+      console.error('Error PUT /llamadas/:id:', err)
+      res.status(500).json({ message: 'Internal Server Error' })
+    }
+  }
+)
 
-  })
-
-llamadasRouter.delete('/:id',
-  (req, res) => {
-    Promise.resolve(LlamadasController.deleteLlamada(req, res))
-      .catch(err => {
-        console.error('Error in llamadasRouter DELETE /:', err)
-        res.status(500).json({ message: 'Internal Server Error' })
-      })
-  })
+// Eliminar llamada
+llamadasRouter.delete('/:id', async (req, res) => {
+  try {
+    await LlamadasController.deleteLlamada(req, res)
+  } catch (err) {
+    console.error('Error DELETE /llamadas/:id:', err)
+    res.status(500).json({ message: 'Internal Server Error' })
+  }
+})
 
 export { llamadasRouter }
