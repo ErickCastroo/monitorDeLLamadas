@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { Cliente } from '@prisma/client'
 import { prisma } from '@/config/db.js'
-import fs from 'fs'
+import ExcelJS from 'exceljs'
 import path from 'path'
 
 export class clientesController {
@@ -119,6 +119,7 @@ export class clientesController {
     res.json(clientes)
   }
 
+
   static async procesarExcel(req: Request, res: Response) {
     try {
       if (!req.file) {
@@ -127,11 +128,32 @@ export class clientesController {
 
       const filePath = path.resolve(req.file.path)
 
-      // AQUI luego parsearemos con exceljs
+      const workbook = new ExcelJS.Workbook()
+      await workbook.xlsx.readFile(filePath)
+      const worksheet = workbook.worksheets[0]
+
+      const empleados = await prisma.empleado.findMany()
+      if (empleados.length === 0) {
+        return res.status(400).json({ message: 'No hay empleados disponibles para asignar' })
+      }
+
+      const filas = worksheet.getSheetValues().slice(2) // Elimina fila de encabezado
+      const clientes = filas.map((fila: any, index: number) => ({
+        cuenta: String(fila[1]).trim(),
+        nombre: String(fila[2]).trim(),
+        domicilio: String(fila[3]).trim(),
+        saldo: parseFloat(fila[4]),
+        telefono: String(fila[5]).trim(),
+        empleadoId: empleados[index % empleados.length].id
+      }))
+
+      const insertados = await prisma.cliente.createMany({
+        data: clientes
+      })
+
       return res.status(200).json({
-        message: 'Archivo recibido correctamente',
-        nombre: req.file.originalname,
-        ruta: filePath
+        message: 'Clientes registrados exitosamente',
+        total: insertados.count
       })
 
     } catch (error) {
@@ -140,4 +162,3 @@ export class clientesController {
     }
   }
 }
-
