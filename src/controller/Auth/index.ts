@@ -5,7 +5,7 @@ import { prisma } from '@/config/db.js'
 
 export class AuthController {
 
-  static async getEmpleados(req: Request, res: Response) {
+  static async getEmpleados(res: Response) {
     try {
       const empleados = await prisma.empleado.findMany()
       return res.status(200).json(empleados)
@@ -66,10 +66,13 @@ export class AuthController {
           contrasena
         }
       })
-
       if (!empleado) {
         return res.status(401).json({ message: 'Credenciales incorrectas' })
       }
+
+      return res.status(200).json(empleado)
+
+
 
       //jwt   
 

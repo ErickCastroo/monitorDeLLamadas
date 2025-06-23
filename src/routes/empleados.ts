@@ -6,8 +6,8 @@ import { validation } from '@/middleware/validation.js'
 
 const empleados = Router()
 
-empleados.get('/', (req, res) => {
-  Promise.resolve(AuthController.getEmpleados(req, res))
+empleados.get('/get', (req, res) => {
+  Promise.resolve(AuthController.getEmpleados(res))
     .catch((error) => {
       console.error('Error fetching employees:', error)
       res.status(500).json({ message: 'Error al obtener los Empleados' })
@@ -32,7 +32,7 @@ empleados.post('/create',
       .catch(next)
   })
 
-empleados.put('/update/:id',
+empleados.put('/:id',
   body('nombre').notEmpty().withMessage('Nombre is required'),
   body('contrasena').isLength({ min: 8 }).notEmpty().withMessage('Contrasena must be at least 8 characters long'),
   validation,
