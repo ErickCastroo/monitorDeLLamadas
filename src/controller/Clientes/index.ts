@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
 import { Cliente } from '@prisma/client'
 import { prisma } from '@/config/db.js'
+import fs from 'fs'
+import path from 'path'
 
 export class clientesController {
 
@@ -103,4 +105,39 @@ export class clientesController {
       return res.status(500).json({ message: 'Error al eliminar cliente' })
     }
   }
+
+  static async getClientesPendientes(req: Request, res: Response) {
+    const empleadoId = Number(req.query.id)
+
+    const clientes = await prisma.cliente.findMany({
+      where: {
+        empleadoId,
+        seguimiento: null
+      }
+    })
+
+    res.json(clientes)
+  }
+
+  static async procesarExcel(req: Request, res: Response) {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: 'No se subió ningún archivo' })
+      }
+
+      const filePath = path.resolve(req.file.path)
+
+      // AQUI luego parsearemos con exceljs
+      return res.status(200).json({
+        message: 'Archivo recibido correctamente',
+        nombre: req.file.originalname,
+        ruta: filePath
+      })
+
+    } catch (error) {
+      console.error('Error al procesar el archivo:', error)
+      return res.status(500).json({ message: 'Error interno al procesar el Excel' })
+    }
+  }
 }
+

@@ -2,6 +2,8 @@ import { Router } from 'express'
 import { body } from 'express-validator'
 
 import { validation } from '@/middleware/validation.js'
+import { upload } from '@/middleware/multer.js'
+
 
 import { clientesController } from '@/controller/Clientes/index.js'
 
@@ -57,5 +59,22 @@ clientes.delete('/:id', (req, res) => {
       res.status(500).json({ message: 'Error al eliminar el cliente' })
     })
 })
+
+
+clientes.get('/empleado/:id', (req, res) => {
+  Promise.resolve(clientesController.getClientesPendientes(req, res))
+    .catch(error => {
+      console.error('Error fetching clients by employee:', error)
+      res.status(500).json({ message: 'Error al obtener los clientes por empleado' })
+    })
+})
+
+clientes.post('/upload',
+  upload.single('file'),
+  (req, res, next) => {
+    Promise.resolve(clientesController.procesarExcel(req, res)).catch(next)
+  }
+)
+
 
 export { clientes }

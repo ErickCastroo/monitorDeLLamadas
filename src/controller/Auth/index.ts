@@ -72,8 +72,6 @@ export class AuthController {
 
       return res.status(200).json(empleado)
 
-
-
       //jwt   
 
     } catch (error) {
