@@ -108,7 +108,6 @@ export class clientesController {
 
   static async getClientesPendientes(req: Request, res: Response) {
     const empleadoId = Number(req.query.id)
-
     const clientes = await prisma.cliente.findMany({
       where: {
         empleadoId,
@@ -118,7 +117,6 @@ export class clientesController {
 
     res.json(clientes)
   }
-
 
   static async procesarExcel(req: Request, res: Response) {
     try {

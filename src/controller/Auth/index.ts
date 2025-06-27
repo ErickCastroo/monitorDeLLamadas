@@ -56,7 +56,6 @@ export class AuthController {
     }
   }
 
-
   static async login(req: Request, res: Response) {
     try {
       const { nombre, contrasena } = req.body as { nombre: string; contrasena: string }
@@ -72,8 +71,7 @@ export class AuthController {
 
       return res.status(200).json(empleado)
 
-      //jwt   
-
+      //jwt
     } catch (error) {
       console.error('Error during login:', error)
       return res.status(500).json({ message: 'Error durante al login' })
